@@ -3,7 +3,6 @@ using SerilLogDemo.Middlewares;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
-using Serilog.Exceptions;
 using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
