@@ -1,6 +1,9 @@
-﻿using Serilog;
+﻿using SerilLogDemo.Helpers;
+using SerilLogDemo.Middlewares;
+using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Exceptions;
 using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +15,9 @@ levelSwitch.MinimumLevel = LogEventLevel.Information;
 // 環境變數
 var env = builder.Environment.EnvironmentName;
 
+// log template
+string logTemplate = "[{Timestamp:yyyy/MM/dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{RequestBody}{ResponseBody}{NewLine}{Exception}";
+
 // 全域設定
 /*  🔔new CompactJsonFormatter()
  *  由於 Log 的欄位很多，使用 Console Sink 會比較看不出來，改用 Serilog.Formatting.Compact 來記錄 JSON 格式的 Log 訊息會清楚很多！
@@ -22,8 +28,8 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()  // 可以增加Log輸出欄位 https://www.cnblogs.com/wd4j/p/15043489.html
     .Enrich.WithProperty("Application", "SerilLogDemo") // Enrich.WithProperty 也可以使用此方法預設欄位
     .Enrich.WithProperty("Environment", env)
-    .WriteTo.Console(new CompactJsonFormatter()) // 寫入Console 
-    .WriteTo.File(new CompactJsonFormatter(),"logs/log-.txt", rollingInterval: RollingInterval.Day) // 寫入txt
+    .WriteTo.Console(outputTemplate: logTemplate) // 寫入Console 
+    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day, outputTemplate: logTemplate) // 寫入txt
     .WriteTo.Seq("http://localhost:5341", apiKey: "csUnJv1BPQ5LOzZyMHag", controlLevelSwitch: levelSwitch)
     .CreateLogger();
 
@@ -43,24 +49,25 @@ try
 
     var app = builder.Build();
 
-    app.UseSerilogRequestLogging(options =>
-    {
-        /* 如果不用 new CompactJsonFormatter()格式輸出
-           可以在這邊自訂義格式但是可以先利用 new CompactJsonFormatter() 看Json屬性有哪些
-            再來自定義
-         */
-        // options.MessageTemplate = "Handled {RequestPath}";
+    // SerilLog 官網推薦
+    //app.UseSerilogRequestLogging(options =>
+    //{
+    //    /* 如果不用 new CompactJsonFormatter()格式輸出
+    //       可以在這邊自訂義格式但是可以先利用 new CompactJsonFormatter() 看Json屬性有哪些
+    //        再來自定義
+    //     */
+    //    // options.MessageTemplate = "Handled {RequestPath}";
 
-        // Emit debug-level events instead of the defaults
-        // options.GetLevel = (httpContext, elapsed, ex) => LogEventLevel.Debug;
+    //    // Emit debug-level events instead of the defaults
+    //    // options.GetLevel = (httpContext, elapsed, ex) => LogEventLevel.Debug;
 
-        // 如果覺得SerilLog太少，可以新增欄位
-        options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
-        {
-            diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
-            diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
-        };
-    });
+    //    // 如果覺得SerilLog太少，可以新增欄位
+    //    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    //    {
+    //        diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+    //        diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+    //    };
+    //});
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -72,6 +79,9 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
+
+    app.UseMiddleware<RequestResponseLoggingMiddleware>();
+    app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
 
     app.MapControllers();
 
