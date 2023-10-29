@@ -1,8 +1,16 @@
 ﻿using Serilog;
+using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 設定Seq Level
+var levelSwitch = new LoggingLevelSwitch();
+levelSwitch.MinimumLevel = LogEventLevel.Information;
+
+// 環境變數
+var env = builder.Environment.EnvironmentName;
 
 // 全域設定
 /*  🔔new CompactJsonFormatter()
@@ -12,8 +20,11 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information() // 設定最小Log輸出
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) // 設定 Microsoft.AspNetCore 訊息為 Warning 為最小輸出
     .Enrich.FromLogContext()  // 可以增加Log輸出欄位 https://www.cnblogs.com/wd4j/p/15043489.html
+    .Enrich.WithProperty("Application", "SerilLogDemo") // Enrich.WithProperty 也可以使用此方法預設欄位
+    .Enrich.WithProperty("Environment", env)
     .WriteTo.Console(new CompactJsonFormatter()) // 寫入Console 
     .WriteTo.File(new CompactJsonFormatter(),"logs/log-.txt", rollingInterval: RollingInterval.Day) // 寫入txt
+    .WriteTo.Seq("http://localhost:5341", apiKey: "csUnJv1BPQ5LOzZyMHag", controlLevelSwitch: levelSwitch)
     .CreateLogger();
 
 try
