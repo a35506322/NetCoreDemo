@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CommandArgsValid": {
+      "commandName": "Project",
+      "commandLineArgs": "-mode=prod -h=777"
+    }
+  }
+}
