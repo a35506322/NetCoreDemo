@@ -82,6 +82,9 @@ try
     app.UseMiddleware<RequestResponseLoggingMiddleware>();
     app.UseSerilogRequestLogging(opts => opts.EnrichDiagnosticContext = LogHelper.EnrichFromRequest);
 
+    // 📌因為UseSerilogRequestLoggin換流問題如果你自己不捕捉前端是不會拿到錯誤訊息的，千萬注意
+    app.UseExceptionHandler(err => err.UseCustomErrors(app.Environment));
+
     app.MapControllers();
 
     app.Run();
