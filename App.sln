@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SerilLogDemo", "SerilLogDem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDic_VS_Where", "ToDic_VS_Where\ToDic_VS_Where.csproj", "{729FB6EA-0BA4-499B-BA5A-C815CE067132}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThrowError差異", "ThrowError差異\ThrowError差異.csproj", "{9E937FDF-358A-4BAE-ADA4-9F0B0DDB62C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThrowError差異", "ThrowError差異\ThrowError差異.csproj", "{9E937FDF-358A-4BAE-ADA4-9F0B0DDB62C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecryptionComparison", "加解密C#_VS_SQL\DecryptionComparison.csproj", "{882EE3EC-3990-4508-AADE-674BABD20F78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{9E937FDF-358A-4BAE-ADA4-9F0B0DDB62C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E937FDF-358A-4BAE-ADA4-9F0B0DDB62C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E937FDF-358A-4BAE-ADA4-9F0B0DDB62C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{882EE3EC-3990-4508-AADE-674BABD20F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{882EE3EC-3990-4508-AADE-674BABD20F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{882EE3EC-3990-4508-AADE-674BABD20F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{882EE3EC-3990-4508-AADE-674BABD20F78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
